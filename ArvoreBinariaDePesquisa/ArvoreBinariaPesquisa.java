@@ -43,7 +43,7 @@ public class ArvoreBinariaPesquisa {
         this.tamanho++;
     }
     public boolean estaVazia() {
-        //implementar
+        if(tamanho == 0 && raiz.equals(null)) return true;
         return false;
     }
     public int obterTamanho() {
@@ -51,8 +51,8 @@ public class ArvoreBinariaPesquisa {
         return 0;
     }
     public void limpar(){
-        //limpa a arvore
-        //implementar
+        tamanho = 0;
+        raiz = null;
     }
     public int obterEsquerda(int item) {
         //retorna o filho a esquerda de item
