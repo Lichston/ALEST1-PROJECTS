@@ -1,8 +1,9 @@
-package aula24_arvores_binarias_pesquisa;
-
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
-public class ArvoreBinariaPesquisa {
+
+public class ArvoreBinariaDePesquisa {
     class Nodo {
         public int item;
         public Nodo pai;
@@ -14,12 +15,31 @@ public class ArvoreBinariaPesquisa {
             this.esquerda = null;
             this.direita = null;
         }
+        
     }
     private Nodo raiz;
     private int tamanho;
-    public ArvoreBinariaPesquisa() {
+    public ArvoreBinariaDePesquisa() {
         tamanho = 0;
     }
+
+    private Nodo obterNodo(int item){
+
+        Nodo aux = raiz;
+
+        while(aux != null){
+
+            if(aux.item == item) return aux;
+
+            if(aux.item > item) aux = aux.esquerda;
+            else if(aux.item < item) aux = aux.direita;
+
+        }
+
+        return null;
+
+    }
+
     private void adicionarRecursivamente(Nodo novoNodo, Nodo pai) {
         if(novoNodo.item < pai.item) { //vai para a esquerda do nodo pai
             if(pai.esquerda==null) {
@@ -42,81 +62,167 @@ public class ArvoreBinariaPesquisa {
         else adicionarRecursivamente(novoNodo, raiz);
         this.tamanho++;
     }
-    public boolean estaVazia() {
-        if(tamanho == 0 && raiz.equals(null)) return true;
+
+
+    public boolean estaVazia(){
+
+        if(tamanho==0) return true;
         return false;
+
     }
-    public int obterTamanho() {
-        //implementar
-        return 0;
+
+    public int obterTamanho(){
+
+        return tamanho;
+
     }
+
     public void limpar(){
-        tamanho = 0;
-        raiz = null;
+
+        tamanho=0;
+        raiz=null;
+
     }
-    public int obterEsquerda(int item) {
-        //retorna o filho a esquerda de item
-        //implmentar
-        return 0;
+
+    public int obterEsquerda(int item){
+        if(obterNodo(item).esquerda != null) return obterNodo(item).esquerda.item;
+        return -1;
     }
-    public int obterDireita(int item) {
-        //retorna o filho a direita de item
-        //implmentar
-        return 0;
+
+    public int obterDireita(int item){ 
+        if(obterNodo(item).direita != null) return obterNodo(item).direita.item;
+        return -1;
     }
-    public int obterPai(int item) {
-        //retorna o pai do elemento item
-        //implementar
-        return 0;
+
+    public int obterPai(int item){
+        if(obterNodo(item).pai != null) return obterNodo(item).pai.item;
+        return -1;
     }
+
     public ArrayList<Integer> elementosPreOrdem() {
-        //retorna um array list com os elementos (valores inteiros) em pre-ordem
-        //implementar
-        return null;
+        ArrayList<Integer> lista = new ArrayList<>();
+        preOrdemRecursivo(raiz, lista);
+        return lista;
     }
+
+    private void preOrdemRecursivo(Nodo nodo, ArrayList<Integer> lista) {
+        if (nodo == null) {
+            return;
+        }
+        lista.add(nodo.item);
+        preOrdemRecursivo(nodo.esquerda, lista);
+        preOrdemRecursivo(nodo.direita, lista);
+    }
+
     public ArrayList<Integer> elementosCentralOrdem() {
-        //retorna um array list com os elementos (valores inteiros) em ordem central
-        //implementar
-        return null;
+        ArrayList<Integer> lista = new ArrayList<>();
+        centralOrdemRecursivo(raiz, lista);
+        return lista;
     }
+
+    private void centralOrdemRecursivo(Nodo nodo, ArrayList<Integer> lista) {
+        if (nodo == null) {
+            return;
+        }
+        centralOrdemRecursivo(nodo.esquerda, lista);
+        lista.add(nodo.item);
+        centralOrdemRecursivo(nodo.direita, lista);
+    }
+
     public ArrayList<Integer> elementosPosOrdem() {
-        //retorna um array list com os elementos (valores inteiros) em pos ordem
-        //implementar
-        return null;
+        ArrayList<Integer> lista = new ArrayList<>();
+        posOrdemRecursivo(raiz, lista);
+        return lista;
     }
+
+    private void posOrdemRecursivo(Nodo nodo, ArrayList<Integer> lista) {
+        if (nodo == null) {
+            return;
+        }
+        posOrdemRecursivo(nodo.esquerda, lista);
+        posOrdemRecursivo(nodo.direita, lista);
+        lista.add(nodo.item);
+    }
+
     public ArrayList<Integer> elementosLargura() {
-        //retorna um array list com os elementos (valores inteiros) em um caminhamento em largura
-        //implementar
-        return null;
+        ArrayList<Integer> lista = new ArrayList<>();
+        if (raiz == null) {
+            return lista;
+        }
+
+        Queue<Nodo> fila = new LinkedList<>();
+        fila.add(raiz);
+
+        while (!fila.isEmpty()) {
+            Nodo nodo = fila.poll();
+            lista.add(nodo.item);
+
+            if (nodo.esquerda != null) {
+                fila.add(nodo.esquerda);
+            }
+            if (nodo.direita != null) {
+                fila.add(nodo.direita);
+            }
+        }
+
+        return lista;
     }
+
     public int obterNivel(int item) {
-        //retorna o nivel do elemeto item, caso nao existe retorna -1
-        //implementar
-        return 0;
+        Nodo nodo = obterNodo(item);
+        if (nodo == null) {
+            return -1; // Elemento não encontrado
+        }
+
+        int nivel = 0;
+        while (nodo != null) {
+            nodo = nodo.pai;
+            nivel++;
+        }
+        return nivel - 1;
     }
-    public boolean existe(int item) {
-        //retorna true ou false e existe o valor item na arvore
-        //implementar
-        return false;
-    }
+
     public int altura() {
-        //retorna altura da arvore
-        return 0;
+        return calcularAltura(raiz);
     }
-    public boolean ehInterno(int item) {
-        //retorna true se o elemento esta em um nodo interno
-        //implementar
+
+    private int calcularAltura(Nodo nodo) {
+        if (nodo == null) {
+            return -1;
+        }
+        int alturaEsquerda = calcularAltura(nodo.esquerda);
+        int alturaDireita = calcularAltura(nodo.direita);
+        return Math.max(alturaEsquerda, alturaDireita) + 1;
+    }
+
+    public boolean buscarInterno(int item) {
+        Nodo nodo = obterNodo(item);
+        if(nodo != null && (nodo.esquerda != null || nodo.direita != null)) return true;
+        else return false;
+    }
+
+    public boolean buscarExterno(int item) {
+        Nodo nodo = obterNodo(item);
+        if(nodo != null && nodo.esquerda == null && nodo.direita == null) return true;
+        else return false;
+    }
+
+    public boolean existe(int item){
+        if(obterNodo(item) != null) return true;
         return false;
     }
-    public boolean ehExterno(int item) {
-        //retorna true se o elemento esta em um nodo interno
-        //implementar
-        return false;
+
+    public void remover(int item){
+
+        Nodo aux = obterNodo(item);
+
+        if(aux.item == item){
+            if(aux.item < aux.pai.item) aux.pai.esquerda = null;
+            else if(aux.item > aux.pai.item) aux.pai.direita = null;
+        }
+
     }
-    public void remover(int item) {
-        //remove o elemento da arvore se ele existir
-        //implementar
-    }
+
     public void imprimirArvore() {
         imprimirArvoreRecusivamente(this.raiz, 0);
     }
